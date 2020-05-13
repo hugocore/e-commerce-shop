@@ -1,0 +1,45 @@
+# Please keep AllCops, Bundler, Layout, Style, Metrics groups and then order cops
+# alphabetically
+#
+# References:
+#   * https://github.com/bbatsov/ruby-style-guide
+#   * https://rubocop.readthedocs.io/
+
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  ExtraDetails: false
+  TargetRubyVersion: 2.7.0
+  NewCops: enable
+  Exclude:
+    # auto-generated
+    - 'bin/*'
+    - 'db/schema.rb'
+    - 'coverage/**/*'
+    # temp files
+    - 'tmp/**/*'
+    # node_modules could contain Ruby code
+    - 'node_modules/**/*'
+    # vendor/ dir is used by most CI services
+    - 'vendor/**/*'
+
+Layout/LineLength:
+  Max: 100
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+  ExcludedMethods:
+    - namespace
+    - draw
+    - context
+    - describe
+    - shared_examples
+    - shared_examples_for

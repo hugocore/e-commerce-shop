@@ -1,0 +1,17 @@
+language: ruby
+rvm:
+  - 2.7.0
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database api_test;' -U postgres
+script:
+  - bundle exec rake db:test:load
+  - bundle exec rspec
+env:
+  global:
+  - DB_HOST=localhost
+  - DB_USER=postgres
+  - DB_PASSWORD=
+  - RAILS_ENV=test
+  - RUBYOPT='-W:no-deprecated -W:no-experimental'

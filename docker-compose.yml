@@ -1,0 +1,21 @@
+version: '3'
+services:
+  db:
+    image: postgres:12
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: 'secret'
+
+  web:
+    build: .
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - .:/myapp
+    ports:
+      - "3000:3000"
+    environment:
+      DB_PASSWORD: 'secret'
+      RUBYOPT: '-W:no-deprecated -W:no-experimental' # hide warnings until gems catch up to Ruby 2.7
+    depends_on:
+      - db
