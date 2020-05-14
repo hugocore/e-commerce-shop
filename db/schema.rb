@@ -19,9 +19,11 @@ ActiveRecord::Schema.define(version: 2020_05_14_152552) do
     t.string "region"
     t.integer "days"
     t.bigint "supplier_id", null: false
+    t.bigint "product_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["region", "supplier_id"], name: "index_delivery_times_on_region_and_supplier_id", unique: true
+    t.index ["product_id"], name: "index_delivery_times_on_product_id"
+    t.index ["region", "supplier_id", "product_id"], name: "index_delivery_times_on_region_and_supplier_id_and_product_id", unique: true
     t.index ["region"], name: "index_delivery_times_on_region"
     t.index ["supplier_id"], name: "index_delivery_times_on_supplier_id"
   end
@@ -50,6 +52,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_152552) do
     t.index ["name"], name: "index_suppliers_on_name"
   end
 
+  add_foreign_key "delivery_times", "products"
   add_foreign_key "delivery_times", "suppliers"
   add_foreign_key "stocks", "products"
   add_foreign_key "stocks", "suppliers"
