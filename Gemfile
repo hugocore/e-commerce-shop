@@ -19,6 +19,10 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'dry-auto_inject', '~> 0.7'
 gem 'dry-container', '~> 0.7'
 
+# Types
+gem 'dry-struct', '~> 1.0'
+gem 'dry-types', '~> 1.2'
+
 group :development, :test do
   gem 'coveralls', '~> 0.8'
   gem 'pry'
