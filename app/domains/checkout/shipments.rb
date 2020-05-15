@@ -38,7 +38,7 @@ module Checkout
     private
 
     def delivery_date(shipments_subset)
-      shipments_subset.map(&:delivery_date).max
+      shipments_subset.map(&:delivery_date).max.iso8601
     end
 
     def shipments_by_supplier
