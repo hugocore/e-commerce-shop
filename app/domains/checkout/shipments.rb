@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Checkout
   class Shipments
     attr_reader :shipments

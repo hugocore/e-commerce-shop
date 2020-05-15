@@ -9,15 +9,12 @@ RSpec.describe Checkout::Shipments do
     let(:supplier) { create :supplier }
     let(:product) { create :product }
     let(:count) { 1 }
-    let(:delivery_date) { Date.today + 1.day }
+    let(:delivery_date) { Time.zone.today + 1.day }
 
     it 'stores a new shipment' do
       expect do
         checkout_shipments.add(
-          supplier: supplier,
-          product: product,
-          count: count,
-          delivery_date: delivery_date
+          supplier: supplier, product: product, count: count, delivery_date: delivery_date
         )
       end.to change(checkout_shipments.shipments, :count)
     end
@@ -26,8 +23,8 @@ RSpec.describe Checkout::Shipments do
   describe '#to_hash' do
     context 'with multiple shipments' do
       let(:count) { 1 }
-      let(:delivery_date_tomorrow) { Date.today + 1.day }
-      let(:delivery_date_late) { Date.today + 2.day }
+      let(:delivery_date_tomorrow) { Time.zone.today + 1.day }
+      let(:delivery_date_late) { Time.zone.today + 2.days }
       let(:supplier_a) { create :supplier }
       let(:supplier_b) { create :supplier }
       let(:product_a) { create :product }
