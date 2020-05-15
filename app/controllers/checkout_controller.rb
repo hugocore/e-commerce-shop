@@ -2,12 +2,12 @@
 
 class CheckoutController < ApplicationController
   def allocate_basket
-    command = AllocateBasketCommand.new(
+    command = CheckoutBasketCommand.new(
       region: checkout_params[:region],
       line_items: permitted_line_items
     )
 
-    shipments = allocation_service.call(command)
+    shipments = checkout_service.call(command)
 
     render json: shipments.to_json
   end
@@ -27,7 +27,7 @@ class CheckoutController < ApplicationController
     end
   end
 
-  def allocation_service
-    Container['allocation_service']
+  def checkout_service
+    Container['checkout_service']
   end
 end

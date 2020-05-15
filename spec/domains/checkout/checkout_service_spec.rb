@@ -2,14 +2,14 @@
 
 require 'rails_helper'
 
-RSpec.describe Checkout::AllocationService do
+RSpec.describe Checkout::CheckoutService do
   subject(:allocation) { described_class.new.call(command) }
 
   describe '#call' do
     context 'with different suppliers (scenario 1)' do
       let(:supplier) { create :supplier }
       let(:command) do
-        AllocateBasketCommand.new(
+        CheckoutBasketCommand.new(
           region: region,
           line_items: [
             { name: product_a.name, quantity: 1 },
@@ -36,7 +36,7 @@ RSpec.describe Checkout::AllocationService do
     context 'with different products (scenario 2)' do
       let(:supplier_a) { create :supplier }
       let(:command) do
-        AllocateBasketCommand.new(
+        CheckoutBasketCommand.new(
           region: region,
           line_items: [
             { name: product.name, quantity: 1 }
@@ -61,7 +61,7 @@ RSpec.describe Checkout::AllocationService do
 
     context 'with different products and suppliers (scenario 3)' do
       let(:command) do
-        AllocateBasketCommand.new(
+        CheckoutBasketCommand.new(
           region: region,
           line_items: [
             { name: t_shirt.name, quantity: 1 },
@@ -96,7 +96,7 @@ RSpec.describe Checkout::AllocationService do
       let(:supplier_a) { create :supplier }
       let(:quantity) { 10 }
       let(:command) do
-        AllocateBasketCommand.new(
+        CheckoutBasketCommand.new(
           region: region,
           line_items: [
             { name: t_shirt.name, quantity: quantity }
