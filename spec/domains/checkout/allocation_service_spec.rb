@@ -29,7 +29,7 @@ RSpec.describe Checkout::AllocationService do
       end
 
       it 'allocates a delivery that takes the max amount of delivery days' do
-        expect(allocation.delivery_time).to eq(Date.today + 3.day)
+        expect(allocation[:delivery_date]).to eq(Date.today + 3.day)
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe Checkout::AllocationService do
       end
 
       it 'picks the quickest supplier to deliver the same product' do
-        expect(allocation.shipments.first[:supplier]).to eq(supplier_b)
+        expect(allocation[:shipments].first[:supplier]).to eq(supplier_b.name)
       end
     end
 
@@ -88,17 +88,18 @@ RSpec.describe Checkout::AllocationService do
       end
 
       it 'picks the quickest supplier to deliver the same product' do
-        expect(allocation.shipments.first.supplier).to eq(supplier_b.name)
+        expect(allocation[:shipments].first[:supplier]).to eq(supplier_b.name)
       end
     end
 
     context 'with parcial shipments (scenario 4)' do
       let(:supplier_a) { create :supplier }
+      let(:quantity) { 10 }
       let(:command) do
         AllocateBasketCommand.new(
           region: region,
           line_items: [
-            { name: t_shirt.name, quantity: 10 }
+            { name: t_shirt.name, quantity: quantity }
           ]
         )
       end
@@ -116,19 +117,20 @@ RSpec.describe Checkout::AllocationService do
       end
 
       it 'allocates shipments from different suppliers to fullfil the basket' do
-        expect(allocation.shipments.size).to eq(2)
+        expect(allocation[:shipments].size).to eq(2)
       end
 
       it 'picks a parcial amount from one supplier' do
-        shipment = allocation.shipments.find { |s| s.supplier == supplier_a.name }
+        shipment = allocation[:shipments].find { |s| s[:supplier] == supplier_a.name }
 
-        expect(shipment.items.first).to eq({ title: t_shirt.name, count: supplier_a_stock })
+        expect(shipment[:items].first).to eq({ title: t_shirt.name, count: supplier_a_stock })
       end
 
       it 'picks a parcial amount from another supplier' do
-        shipment = allocation.shipments.find { |s| s.supplier == supplier_b.name }
+        shipment = allocation[:shipments].find { |s| s[:supplier] == supplier_b.name }
+        count = quantity - supplier_a_stock
 
-        expect(shipment.items.first).to eq({ title: t_shirt.name, count: supplier_b_stock })
+        expect(shipment[:items].first).to eq({ title: t_shirt.name, count: count })
       end
     end
   end
