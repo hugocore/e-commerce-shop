@@ -69,19 +69,19 @@ https://codeclimate.com/github/hugocore/e-commerce-shop
 
 # The problem
 
-Implement a REST API that calculates the number of days to
+- Implement a REST API that calculates the number of days to
 deliver multiple shipments originating from different
 suppliers spread around the world.
 
-Not all suppliers supply all products, so it might be
+- Not all suppliers supply all products, so it might be
 necessary to collect partial shipments from different suppliers
 to fulfil one order.
 
-Every supplier operates in different regions and shipments
+- Every supplier operates in different regions and shipments
 from those regions might take different amounts of time to
 deliver the same product.
 
-Hence, the problem is knowing which suppliers to pick
+- Hence, the problem is knowing which suppliers to pick
 to provide the less amount of shipments,
 in the quickest fashion.
 
@@ -109,7 +109,7 @@ and the time the customer is waiting to receive it. For instance:
 In this example, the supplier *B* is chosen, because although
 B and D could provide the same products and cover all the
 necessary shipments (shipments by supplier = 2), compared with
-D is one day quicker to deliver the same products.
+D, is one day quicker to deliver the products.
 
 # Solution
 
@@ -144,23 +144,28 @@ I wanted to achieve an architecture that would:
 With these reasons in mind, I've decided to follow a *Domain-Driven Design*,
 where the following layers are stacked together:
 
-* API - Controllers receive HTTP requests that validate parameters and pass
+* Application - Controllers receive HTTP requests that validate parameters and pass
 down actions to services in the lower layer, i.e. domain layer, through DTOs.
 
-* Domain layer - This layer keeps the logic that applies to the underlying
+* Domain - This layer keeps the logic that applies to the underlying
 models, bounded in contexts about the many operations the system can do. Every
 domain is composed of services, repositories and other classes that make sense
 to be together and where a clear boundary of responsibility is defined. These are
 the existing domains:
 
- * Checkout - This domain deals with the process of allocating stock to a basket, based on criteria that favours fewer shipments per order.
+> Checkout - This domain deals with the process of allocating stock to a basket,
+based on criteria that favours fewer shipments per order.
 
-* Data layer - Controls the data storage and data logic that depends on the
-data management implementation chosen. To keep things simple in this project,
+* Data access - Middle layer that abstracts the data storage implementation chosen by a repository
+of data models that follow the same interfaces but can act on different data storages. In this
+project, it seemed overkill to have this layer due to the small number of models and their
+simplicity. Thus I just coupled services and ActiveRecord directly.
+
+* Data layer - Controls the data storage. To keep things simple in this project,
 I've used ActiveRecord to manage the system's entities a.k.a data models. These are the data models represented in
 an Entity–relationship model diagram (ERD):
 
-![ERD](assets/erd.jpg)
+![ERD](assets/erd.png)
 
 * Database - Keeps the data stored. For simplicity, I've chosen PostgreSQL
 due to its acceptable speed and easy to use. Another database, like Redis,
