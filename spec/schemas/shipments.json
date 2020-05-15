@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": ["delivery_date", "shipments"],
+  "properties": {
+    "delivery_date" : {
+      "type" : "string",
+      "format": "date"
+    },
+    "shipments": {
+      "type": "array",
+      "items": {
+        "$ref": "shipment.json#/definitions/shipment"
+      }
+    }
+  }
+}
