@@ -92,7 +92,7 @@ RSpec.describe Checkout::CheckoutService do
       end
     end
 
-    context 'with parcial shipments (scenario 4)' do
+    context 'with partial shipments (scenario 4)' do
       let(:supplier_a) { create :supplier }
       let(:quantity) { 10 }
       let(:command) do
@@ -120,13 +120,13 @@ RSpec.describe Checkout::CheckoutService do
         expect(allocation[:shipments].size).to eq(2)
       end
 
-      it 'picks a parcial amount from one supplier' do
+      it 'picks a partial amount from one supplier' do
         shipment = allocation[:shipments].find { |s| s[:supplier] == supplier_a.name }
 
         expect(shipment[:items].first).to eq({ title: t_shirt.name, count: supplier_a_stock })
       end
 
-      it 'picks a parcial amount from another supplier' do
+      it 'picks a partial amount from another supplier' do
         shipment = allocation[:shipments].find { |s| s[:supplier] == supplier_b.name }
         count = quantity - supplier_a_stock
 
