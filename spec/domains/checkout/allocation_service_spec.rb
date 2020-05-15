@@ -19,7 +19,7 @@ RSpec.describe Checkout::AllocationService do
       end
       let(:product_a) { create :product }
       let(:product_b) { create :product }
-      let(:region) { 'uk' }
+      let(:region) { 'eu' }
 
       before do
         create :delivery_time, region: region, supplier: supplier, product: product_a, days: 3
@@ -45,7 +45,7 @@ RSpec.describe Checkout::AllocationService do
       end
       let(:supplier_b) { create :supplier }
       let(:product) { create :product }
-      let(:region) { 'uk' }
+      let(:region) { 'eu' }
 
       before do
         create :delivery_time, region: region, supplier: supplier_a, product: product, days: 3
@@ -55,12 +55,11 @@ RSpec.describe Checkout::AllocationService do
       end
 
       it 'picks the quickest supplier to deliver the same product' do
-        expect(allocation.delivery_time).to eq(2)
+        expect(allocation.first[:supplier]).to eq(supplier_b)
       end
     end
 
     context 'with different products and suppliers (scenario 3)' do
-      let(:supplier_a) { create :supplier }
       let(:command) do
         AllocateBasketCommand.new(
           region: region,
@@ -70,11 +69,12 @@ RSpec.describe Checkout::AllocationService do
           ]
         )
       end
+      let(:supplier_a) { create :supplier }
       let(:supplier_b) { create :supplier }
       let(:supplier_c) { create :supplier }
       let(:t_shirt) { create :product, name: 't-shirt' }
       let(:hoodie) { create :product, name: 'hoodie' }
-      let(:region) { 'uk' }
+      let(:region) { 'eu' }
 
       before do
         create :delivery_time, region: region, supplier: supplier_a, product: t_shirt, days: 1
@@ -106,7 +106,7 @@ RSpec.describe Checkout::AllocationService do
       let(:supplier_a_stock) { 6 }
       let(:supplier_b_stock) { 7 }
       let(:t_shirt) { create :product, name: 't-shirt' }
-      let(:region) { 'uk' }
+      let(:region) { 'eu' }
 
       before do
         create :delivery_time, region: region, supplier: supplier_a, product: t_shirt, days: 1
