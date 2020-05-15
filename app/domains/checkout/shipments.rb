@@ -24,18 +24,22 @@ module Checkout
           {
             supplier: supplier.name,
             delivery_date: delivery_date(supplier_shipments),
-            items: supplier_shipments.map do |line_item|
-              {
-                title: line_item.product.name,
-                count: line_item.count
-              }
-            end
+            items: supplier_items(supplier_shipments)
           }
         end
       }
     end
 
     private
+
+    def supplier_items(shipments)
+      shipments.map do |shipment|
+        {
+          title: shipment.product.name,
+          count: shipment.count
+        }
+      end
+    end
 
     def delivery_date(shipments_subset)
       shipments_subset.map(&:delivery_date).max.iso8601
