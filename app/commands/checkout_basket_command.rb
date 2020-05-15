@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AllocateBasketCommand < CommandBase
+class CheckoutBasketCommand < CommandBase
   attribute :region, Types::Coercible::String
 
   attribute :line_items, Types::Array do
