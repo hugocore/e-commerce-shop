@@ -29,7 +29,7 @@ RSpec.describe Checkout::AllocationService do
       end
 
       it 'allocates a delivery that takes the max amount of delivery days' do
-        expect(allocation.delivery_time).to eq(3)
+        expect(allocation.delivery_time).to eq(Date.today + 3.day)
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe Checkout::AllocationService do
       end
 
       it 'picks the quickest supplier to deliver the same product' do
-        expect(allocation.first[:supplier]).to eq(supplier_b)
+        expect(allocation.shipments.first[:supplier]).to eq(supplier_b)
       end
     end
 
