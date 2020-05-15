@@ -45,6 +45,7 @@ group :test do
   gem 'rubocop-rspec', require: false
   gem 'simplecov'
   gem 'spring-commands-rspec'
+  gem 'json-schema'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

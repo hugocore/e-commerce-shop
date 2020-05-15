@@ -1,0 +1,16 @@
+{
+  "definitions": {
+    "item": {
+      "type": "object",
+      "required": ["title", "count"],
+      "properties":  {
+        "title" : {
+          "type" : "string"
+        },
+        "count" : {
+          "type" : "integer"
+        }
+      }
+    }
+  }
+}

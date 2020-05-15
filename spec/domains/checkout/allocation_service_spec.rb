@@ -29,7 +29,7 @@ RSpec.describe Checkout::AllocationService do
       end
 
       it 'allocates a delivery that takes the max amount of delivery days' do
-        expect(allocation[:delivery_date]).to eq(Time.zone.today + 3.days)
+        expect(allocation[:delivery_date]).to eq((Time.zone.today + 3.days).iso8601)
       end
     end
 

@@ -47,7 +47,7 @@ RSpec.describe Checkout::Shipments do
       end
 
       it 'returns the latest delivery date at the root' do
-        expect(checkout_shipments.to_hash[:delivery_date]).to eq(delivery_date_late)
+        expect(checkout_shipments.to_hash[:delivery_date]).to eq(delivery_date_late.iso8601)
       end
 
       it 'groups shipments by supplier' do
@@ -61,7 +61,7 @@ RSpec.describe Checkout::Shipments do
         shipments = checkout_shipments.to_hash[:shipments]
         delivery_dates = shipments.map { |shipment| shipment[:delivery_date] }
 
-        expect(delivery_dates).to eq([delivery_date_tomorrow, delivery_date_late])
+        expect(delivery_dates).to eq([delivery_date_tomorrow.iso8601, delivery_date_late.iso8601])
       end
 
       it 'lists products by supplier' do
