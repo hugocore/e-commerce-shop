@@ -15,7 +15,7 @@ class CheckoutController < ApplicationController
   private
 
   def checkout_params
-    params.permit(:region, line_items: [:name, :quantity])
+    params.permit(:region, line_items: %i[name quantity])
   end
 
   def permitted_line_items

@@ -5,7 +5,7 @@ module Checkout
     def call(command)
       @command = command
 
-      return unless products_in_basket.present?
+      return if products_in_basket.blank?
 
       shipments = Shipments.new
 
@@ -22,13 +22,13 @@ module Checkout
 
           allocated_quantity = [stock_item.in_stock, quantity].min
 
-          quantity = quantity - allocated_quantity
+          quantity -= allocated_quantity
 
           shipments.add(
             supplier: stock_item.supplier,
             product: stock_item.product,
             count: allocated_quantity,
-            delivery_date: Date.today + stock_item.delivery_times(region: command.region).days
+            delivery_date: Time.zone.today + stock_item.delivery_times(region: command.region).days
           )
         end
       end

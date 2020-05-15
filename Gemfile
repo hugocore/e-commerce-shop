@@ -41,11 +41,11 @@ end
 group :test do
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'json-schema'
   gem 'rspec-rails'
   gem 'rubocop-rspec', require: false
   gem 'simplecov'
   gem 'spring-commands-rspec'
-  gem 'json-schema'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
