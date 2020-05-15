@@ -5,8 +5,8 @@ class CreateDeliveryTimes < ActiveRecord::Migration[6.0]
     create_table :delivery_times do |t|
       t.string :region
       t.integer :days
-      t.references :supplier, null: false, foreign_key: true
       t.references :product, null: false, foreign_key: true
+      t.references :supplier, null: false, foreign_key: true
 
       t.timestamps
     end
