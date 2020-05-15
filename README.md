@@ -161,7 +161,7 @@ of data models that follow the same interfaces but can act on different data sto
 project, it seemed overkill to have this layer due to the small number of models and their
 simplicity. Thus I just coupled services and ActiveRecord directly.
 
-* Data layer - Controls the data storage. To keep things simple in this project,
+* Persistence - Controls the data storage. To keep things simple in this project,
 I've used ActiveRecord to manage the system's entities a.k.a data models. These are the data models represented in
 an Entity–relationship model diagram (ERD):
 
@@ -202,8 +202,8 @@ end
 ```
 
 By extrapolating the orchestration into one class, we are
-decoupling the inner steps from each other and segregate
-each component to control the order and way they work together.
+decoupling the inner steps from each other and thus
+control the order and way they work together.
 
 At any given time, new steps could be introduced or removed
 without affecting the other inner steps.
@@ -217,15 +217,14 @@ described before, lives.
 Essentially, the `StockAllocationQuery` allocates all the stock
 available for the products in the basket and then
 sorts it by the preference in which suppliers that cover
-more products/deliveries, from top to bottom.
+more products/deliveries are place at the top.
 
 Thus, when reducing the stock, the order is important because
 it will enable the best options to be picked first. Also,
 when there's a tie between suppliers, the quickest one to
 deliver is the one chosen.
 
-Looking at this from a SQL point of view, it would be something
-like this:
+From a SQL point of view, it would be something like this:
 
 ```SQL
  SELECT
@@ -243,19 +242,19 @@ like this:
 ```
 
 This way, we know the preference in which suppliers should be
-allocated to supply their stock. After this, we reduce
-the options until all the necessary amount is fulfilled, one
+allocated. In the next step, we reduce
+the options until all the necessary amounts are fulfilled, one
 by one.
 
 #### StockReduceService
 
-Independently of the stock allocated, we need to reduce stock
+Regardless of the stock allocated, we need to reduce stock
 , i.e. pick which stock will fulfil each order. Although this is
 more straightforward, is also more time-consuming.
 
 For each line item in the basket, we take every stock line item
 one by one, until the required amount to fulfil the line item's
-quantity.
+quantity is achieved.
 
 ```ruby
     def reduce_stock
@@ -292,9 +291,8 @@ requested:
 ```
 
 Extrapolating this concern, allows us to isolate and easily
-maintain how shipments are serialized.
-
-This format is then tested by matching it against
+maintain how shipments are serialized. This format is then tested
+by matching it against
 the schema in: `spec/schemas/shipments.json`.
 
 #### Registry
@@ -314,7 +312,7 @@ end
 ```
 
 Thus, we can compose objects together and decouple them from actual implementations.
-E.g. we could change the criteria in which stock is allocated by
+For instance, we could change the criteria in which stock is allocated, by
 changing the registry's `sorting_criteria` from one Query to another without changing
 any of the services.
 
@@ -326,7 +324,7 @@ stubbed in specs, preventing things like hitting databases or raising errors.
 - Thought about using metadata to store delivery times per region,
 but it seems to not be useful because we
 cannot query metadata attributes in AR. Nevertheless, if the query
-that allocates stock is raw, then it could be a plus.
+that allocates stock was raw, it could be a plus.
 
 ``` ruby
 store :metadata, :accessors => [:colour, :size, :notes, :product_url]
@@ -337,7 +335,7 @@ and reduce joins, but I've decided to be over-optimized
 for this simple use case.
 
 - The `Shipments` class is probably doing to much and could be
-refactored into smaller components. The serialization of shipments
+refactored in smaller components. The serialization of shipments
 into hashes could also be done outside this class. For simplicity,
 I've decided to keep it all in one.
 
