@@ -2,6 +2,8 @@
 
 module Checkout
   class AllocationService
+    include AutoInject['stock_allocation_query']
+
     def call(command)
       @command = command
 
@@ -14,7 +16,7 @@ module Checkout
         quantity = line_item.quantity
 
         # group by product
-        stock_items = in_stock.select { |stock| stock.product.id == product.id }
+        stock_items = allocated_stock.select { |stock| stock.product.id == product.id }
 
         # reduce
         stock_items.each do |stock_item|
@@ -48,25 +50,11 @@ module Checkout
       Stock.where(product: products_in_basket)
     end
 
-    def in_stock
-      query = <<-SQL
-        SELECT
-          COUNT(*) AS count_all,
-          stocks.supplier_id AS stocks_supplier_id,
-          delivery_times.days
-        FROM stocks
-          LEFT OUTER JOIN delivery_times
-            ON delivery_times.product_id = stocks.product_id
-            AND delivery_times.supplier_id = stocks.supplier_id
-            AND delivery_times.region = '#{command.region}'
-        WHERE stocks.product_id IN (#{products_in_basket.map(&:id).join(',')})
-        GROUP BY stocks.supplier_id, delivery_times.days
-        ORDER BY count_all DESC, delivery_times.days ASC
-      SQL
-
-      array = ActiveRecord::Base.connection.execute(query).to_a.map { |a| a['stocks_supplier_id'] }
-
-      products_in_stock.sort_by { |stock| array.index(stock.supplier_id) }
+    def allocated_stock
+      @stock ||= stock_allocation_query.call(
+        region: command.region,
+        products: products_in_basket
+      )
     end
   end
 end
