@@ -7,14 +7,14 @@ module Checkout
 
       return unless products_in_basket.present?
 
-      shipments = []
+      shipments = Shipments.new
 
       command.line_items.map do |line_item|
         product = Product.find_by(name: line_item.name)
         quantity = line_item.quantity
 
         # group by product
-        stock_items = in_stock.group_by(&:product_id)[product.id]
+        stock_items = in_stock.select { |stock| stock.product.id == product.id }
 
         # reduce
         stock_items.each do |stock_item|
@@ -24,16 +24,16 @@ module Checkout
 
           quantity = quantity - allocated_quantity
 
-          shipments << {
-            stock: stock_item,
+          shipments.add(
             supplier: stock_item.supplier,
-            productd: stock_item.product,
-            count: allocated_quantity
-          }
+            product: stock_item.product,
+            count: allocated_quantity,
+            delivery_date: Date.today + stock_item.delivery_times(region: command.region).days
+          )
         end
       end
 
-      shipments
+      shipments.to_hash
     end
 
     private
@@ -58,7 +58,7 @@ module Checkout
           LEFT OUTER JOIN delivery_times
             ON delivery_times.product_id = stocks.product_id
             AND delivery_times.supplier_id = stocks.supplier_id
-            AND delivery_times.region = 'eu'
+            AND delivery_times.region = '#{command.region}'
         WHERE stocks.product_id IN (#{products_in_basket.map(&:id).join(',')})
         GROUP BY stocks.supplier_id, delivery_times.days
         ORDER BY count_all DESC, delivery_times.days ASC
